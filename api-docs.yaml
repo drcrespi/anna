@@ -1,0 +1,537 @@
+openapi: 3.0.2
+info:
+  title: ISIN Data API
+  version: 1.0.0
+  x-logo:
+    url: https://asb.aws.annaservice.com/logo-anna.svg
+    altText: ANNA Logo
+    backgroundColor: '#FFFFFF'
+  contact:
+    name: ISIN data API Support
+    url: https://asb.aws.annaservice.com/#/contact
+    email: asbsupport@anna-web.org
+  description: |-
+    The ANNA Service Bureau (ASB) is a central data hub that has been collecting and enriching securities data from around the world since 2001. On a daily basis, the national numbering agencies feed new ISINs and CFIs as well as updates to existing data to the ASB.
+    The result is the most complete and current collection of ISINs and related data available in the world. This data is provided to the other numbering agencies, as well as non-members of ANNA such as financial services firms and financial data vendors.
+    The ASB was developed and is operated by ANNA partners CUSIP Global Services and SIX Financial Information.
+    Some useful links:
+    - [ANNA Service Bureau](https://anna-web.org/about-the-anna-service-bureau/)
+servers:
+- url: https://api.aws.uat.annaservice.com/api/v1
+tags:
+- name: ISIN
+  description: An International Securities Identification Number (ISIN) is a 12-digit
+    alphanumeric code that uniquely identifies a specific security.
+security:
+- ApiKeyAuth: []
+paths:
+  /isin/search:
+    get:
+      tags:
+      - ISIN
+      summary: Search ISIN database using various search parameters
+      operationId: searchCusip
+      parameters:
+      - name: issuerName
+        in: query
+        description: Issuer Name
+        schema:
+          type: string
+          example: AMAZON COM INC
+      - name: issueDescription
+        in: query
+        description: Issue Description
+        schema:
+          type: string
+          example: COM
+      - name: issuerLegalRegistrationCountry
+        in: query
+        description: Issuer Legal Registration Country
+        schema:
+          type: string
+          example: DE
+      - name: issueCurrency
+        in: query
+        description: Issue Currency
+        schema:
+          type: string
+          example: USD
+      - name: cfiCode
+        in: query
+        description: ISO CFI code
+        schema:
+          type: string
+          example: ESVUFR
+      - name: instrumentCategory
+        in: query
+        description: Instrument Category
+        schema:
+          type: string
+          example: DT
+      - name: fisn
+        in: query
+        description: FISN
+        schema:
+          type: string
+          example: GOOGLE INC/SH
+      - name: isinStatus
+        in: query
+        description: ISIN Status with value N, U, D or empty
+        schema:
+          type: string
+          example: N
+          enum:
+          - N
+          - U
+          - D
+          - ''
+      - name: updatedDateFrom
+        in: query
+        description: ISIN Record Update Date
+        schema:
+          type: string
+          format: date-time
+          example: 2024-07-21T00:00:00Z
+      - name: updatedDateTo
+        in: query
+        description: ISIN Record Update Date
+        schema:
+          type: string
+          format: date-time
+          example: 2024-08-21T23:59:59Z
+      - name: addedDateFrom
+        in: query
+        description: ISIN Record Created Date
+        schema:
+          type: string
+          format: date-time
+          example: 2024-07-21T00:00:00Z
+      - name: addedDateTo
+        in: query
+        description: ISIN Record Created Date
+        schema:
+          type: string
+          format: date-time
+          example: 2024-08-21T23:59:59Z
+      - name: pageSize
+        in: query
+        description: |-
+          The maximum number of ISIN records in the response
+
+          Any integer between 1 and 10000. Default:1000
+        schema:
+          type: integer
+          default: 1000
+          minimum: 1
+          maximum: 10000
+      - name: page
+        in: query
+        description: |-
+          The page number in the search result.  Use this parameter to navigate to next page.
+          Example: Any integer between 1 and 10.  Default:1
+          *If user uses maximum pageSize and page number, API can return up to 100,000 records per API call
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+          maximum: 10
+      - name: sort
+        in: query
+        description: 'The sort filed in the response. default is isin asc Sort fields:
+          isin, issuerName, updatedDate '
+        schema:
+          type: string
+          default: isin
+      responses:
+        '200':
+          description: Successful retrieval of ISIN search result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request.
+        '401':
+          description: ISIN search API call is unauthorized.
+        '500':
+          description: Internal server error.
+      security:
+      - ApiKeyAuth: []
+  /isin/{isinList}:
+    get:
+      tags:
+      - ISIN
+      summary: Retrieve ISIN data by ISIN or comma-delimited ISIN list in the URL
+        (Maximum 50 ISIN in URL)
+      operationId: getIsinDataByIsinList
+      parameters:
+      - name: isinList
+        in: path
+        description: Comma-delimited ISIN Identifiers
+        example: US3030751057,US0231351067
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of ISIN data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request.
+        '401':
+          description: ISIN API call is unauthorized.
+        '500':
+          description: Internal server error.
+      security:
+      - ApiKeyAuth: []
+  /isin/file:
+    post:
+      tags:
+      - ISIN
+      summary: Retrieve ISIN data by ISIN file
+      operationId: getIsinDataByIsinFile
+      parameters:
+      - name: pageSize
+        in: query
+        description: |-
+          The maximum number of ISIN records in the response
+
+          Any integer between 1 and 10000. Default:1000
+        schema:
+          type: integer
+          default: 1000
+          minimum: 1
+          maximum: 10000
+      - name: page
+        in: query
+        description: |-
+          The page number in the search result.  Use this parameter to navigate to next page.
+          Example: Any integer between 1 and 10.  Default:1
+          *If user uses maximum pageSize and page number, API can return up to 100,000 records per API call
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+          maximum: 10
+      - name: sort
+        in: query
+        description: 'The sort filed in the response. default is isin asc Sort fields:
+          isin, issuerName, updatedDate '
+        schema:
+          type: string
+          default: isin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The ISIN CSV file to upload
+      responses:
+        '200':
+          description: Successful retrieval of ISIN data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Bad Request.
+        '401':
+          description: ISIN API call is unauthorized.
+        '500':
+          description: Internal server error.
+      security:
+      - ApiKeyAuth: []
+components:
+  schemas:
+    Response:
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/IsinApiResponse'
+    IsinApiResponse:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/ApiResponseHeader'
+        error:
+          $ref: '#/components/schemas/ApiResponseError'
+        cusipRecords:
+          type: array
+          xml:
+            name: cusipRecords
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IsinRecord'
+      xml:
+        name: response
+    ApiResponseError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        supportEmail:
+          type: string
+    ApiResponseHeader:
+      type: object
+      properties:
+        status:
+          type: integer
+        totalCount:
+          type: integer
+          example: 1
+        queryTime:
+          type: integer
+          example: 90
+        query:
+          type: string
+          example: /isin/search?instrumentCategory=DT&issuerName=Amazon
+        page:
+          type: integer
+          example: 1
+        pageSize:
+          type: integer
+          example: 1000
+    IsinRecord:
+      type: object
+      properties:
+        isin:
+          type: string
+          pattern: ^[A-Z][0-9]{12}$
+          example: US0231351067
+        issueStatus:
+          type: string
+          pattern: ^[A-Z]{1}$
+          example: U
+          enum:
+          - N
+          - U
+          - D
+        instrumentCategory:
+          type: string
+          example: DT
+          enum:
+          - EQ
+          - CV
+          - DT
+          - EN
+          - OP
+          - FT
+          - SP
+          - RI
+          - OT
+          - SO
+        issueDescription:
+          type: string
+          example: COM
+        cfiCode:
+          type: string
+          pattern: ^[A-Z]{6}$
+          example: ESVUFR
+          description: The Classification of Financial Instruments code as per the
+            ISO 10962 standard
+        fisn:
+          type: string
+          example: AMAZON COM INC/SH SH
+          description: The Financial Instrument Short Name as per the ISO 18774 standard
+        termsProspectus:
+          type: string
+          example: Y
+          enum:
+          - Y
+          - N
+          description: The flag indicates whether the ISIN was assigned based on a
+            preliminary prospectus or not
+        norminalValue:
+          type: string
+          example: 123
+        issueCurrency:
+          type: string
+          pattern: ^[A-Z]{3}$
+          example: USD
+        smallestDenomination:
+          type: number
+          example: 50
+        conversionRatio:
+          type: number
+          example: 123
+        maturityDate:
+          type: string
+          format: date
+          example: 2024-08-21T00:00:00Z
+        maturityCode:
+          type: string
+          example: P
+          enum:
+          - P
+          - Q
+          - R
+        exercisePrice:
+          type: number
+          example: 3.45
+        exercisePriceCurrency:
+          type: string
+          example: USD
+        underlyingIsin:
+          type: string
+          example: US38259PAA03
+        interestType:
+          type: string
+          example: F
+          enum:
+          - F
+          - Z
+          - V
+          - C
+          - K
+          - D
+          - Y
+          - M
+        interestRate:
+          type: number
+          example: 4.5
+        interestPaymentDate:
+          type: string
+          example: 1220
+          description: The first interest payment date (MMDD) in a calendar year
+        interestFrequency:
+          type: string
+          example: S
+          enum:
+          - B
+          - A
+          - S
+          - Q
+          - M
+          - W
+          - D
+          - X
+        firstInterestPaymentDate:
+          type: string
+          format: date
+          example: 2024-08-21T00:00:00Z
+        additionalInformation:
+          type: string
+        micCode:
+          type: string
+          example: XNAS
+        leadManagerName:
+          type: string
+          example: data
+        leadManagerLEI:
+          type: string
+          pattern: ^[A-Z][0-9]{20}$
+          example: ZXTILKJKG63JELOEG630
+        fundManagerName:
+          type: string
+        fundManagerLEI:
+          type: string
+        centralSecurityDepositNameAndLEI:
+          type: string
+          description: Central Security Depository (CSD) Name and corresponding LEI
+            must be listed in pair
+        issuerNameLong:
+          type: string
+          example: AMAZON COM INC
+        issuerLEI:
+          type: string
+          pattern: ^[A-Z][0-9]{20}$
+          example: ZXTILKJKG63JELOEG630
+        issuerNameShort:
+          type: string
+          example: AMAZON COM INC
+        issuerSupranational:
+          type: string
+          example: Y
+          enum:
+          - Y
+          - N
+        headquarterAddress1:
+          type: string
+          example: data
+        headquarterAddress2:
+          type: string
+          example: data
+        headquarterStateProvince:
+          type: string
+          example: NY
+        headquarterPostCode:
+          type: string
+          example: 08807
+        headquarterCity:
+          type: string
+          example: New York
+        headquarterCountry:
+          type: string
+          example: US
+        legalRegistrationAddress1:
+          type: string
+          example: address 1
+        legalRegistrationAddress2:
+          type: string
+          example: address 2
+        legalRegistrationStateProvince:
+          type: string
+          example: NY
+        legalRegistrationPostCode:
+          type: string
+          example: 1811
+        legalRegistrationCity:
+          type: string
+          example: New York
+        legalRegistrationCountry:
+          type: string
+          pattern: ^[A-Z]{2}$
+          example: US
+        oldIsin:
+          type: string
+          example: AZ1234567894
+          description: Old ISIN after a change in ISIN code relating to corporate
+            events
+        newIsin:
+          type: string
+          example: AZ2345678901
+          description: New ISIN after a change in ISIN code relating to corporate
+            events
+        callPut:
+          type: string
+          example: C
+          enum:
+          - C
+          - P
+        underlyingInstrumentName:
+          type: string
+          example: Instrument Name
+        headOfficeLEI:
+          type: string
+          pattern: ^[A-Z][0-9]{20}$
+          example: ZXTILKJKG63JELOEG630
+        headOfficeName:
+          type: string
+          example: data
+        cfiStandardVersion:
+          type: string
+          example: ISO 10962:2019
+        updatedDate:
+          type: string
+          format: date-time
+          example: 2024-07-21T00:00:00Z
+        addedDate:
+          type: string
+          format: date-time
+          example: 2024-07-21T00:00:00Z
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
