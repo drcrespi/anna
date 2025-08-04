@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "contact": {
+      "name": "Support",
+      "url": "https://support.templafy.com/",
+      "email": "support@templafy.com"
+    },
+    "version": "v3",
+    "termsOfService": "https://www.templafy.com/templafy-saas-agreement/",
+    "title": "Templafy Public API",
+    "description": "Please refer to our [documentation](https://support.templafy.com/hc/en-us/articles/4411351240081-Public-API-Hive-) for guidelines and examples."
+  },
+  "servers": [
+    {
+      "variables": {
+        "tenantId": {
+          "description": "Your Templafy subdomain, i.e., https://{TenantId}.api.templafy.com",
+          "default": ""
+        }
+      },
+      "url": "https://{tenantId}.api.templafy.com/v3"
+    }
+  ]
+}
