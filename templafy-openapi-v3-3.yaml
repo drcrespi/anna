@@ -1,0 +1,118 @@
+---
+openapi: 3.0.3
+info:
+  contact:
+    name: Support
+    url: https://support.templafy.com/
+    email: support@templafy.com
+  version: v3
+  termsOfService: https://www.templafy.com/templafy-saas-agreement/
+  title: Templafy Public API
+  description: Please refer to our [documentation](https://support.templafy.com/hc/en-us/articles/4411351240081-Public-API-Hive-)
+    for guidelines and examples.
+servers:
+- variables:
+    tenantId:
+      description: Your Templafy subdomain, i.e., https://{TenantId}.api.templafy.com
+      default: ''
+  url: https://{tenantId}.api.templafy.com/v3
+paths:
+  "/spaces":
+    get:
+      tags:
+      - Spaces
+      summary: Lists all existing active spaces.
+      description: Returns a list of all active spaces.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Space"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - bearerAuth:
+        - spaces.read
+  "/libraries":
+    get:
+      tags:
+      - Libraries
+      summary: Lists all libraries from all spaces.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Library"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - bearerAuth:
+        - library.read
+        - library.readwrite
+components:
+  schemas:
+    Space:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique Space identifier
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Space name
+      additionalProperties: false
+      example:
+        id: 541244332157142140
+        name: Global Brand
+    Library:
+      required:
+      - id
+      - libraryType
+      - name
+      - rootFolderId
+      - spaceId
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique library identifier
+          format: int64
+        name:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: Display name of the library
+        libraryType:
+          "$ref": "#/components/schemas/LibraryType"
+        spaceId:
+          type: integer
+          description: Unique identifier of the space to which the library belongs
+          format: int64
+        rootFolderId:
+          type: integer
+          description: Unique identifier of the root folder of the library
+          format: int64
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
