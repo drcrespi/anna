@@ -2294,6 +2294,7 @@ components:
         title: One or more validation errors occurred.
         status: 400
         traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
+
     ColorThemeFieldSchema:
       allOf:
       - "$ref": "#/components/schemas/DataSourceFieldSchema"
@@ -2305,275 +2306,134 @@ components:
         type: colorTheme
         isRequired: false
         isLocked: false
-    CreateColorThemeDataSourceItemFieldRequest:
-      allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - required:
-        - xmlValue
-        type: object
-        properties:
-          xmlValue:
-            maxLength: 3500
-            minLength: 1
-            type: string
-            description: The value of the field based on the schema http://schemas.openxmlformats.org/drawingml/2006/main.
-              Max length is 3500 characters.
-        additionalProperties: false
-      example:
-        type: colorTheme
-        dataSourceFieldId: 5
-        xmlValue: <a:clrScheme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-          name="Templafy_New"><a:dk1><a:srgbClr val="0078FF"/></a:dk1><a:lt1><a:sysClr
-          val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="000000"/></a:dk2><a:lt2><a:srgbClr
-          val="E5E5E5"/></a:lt2><a:accent1><a:srgbClr val="0078FF"/></a:accent1><a:accent2><a:srgbClr
-          val="575757"/></a:accent2><a:accent3><a:srgbClr val="12AA96"/></a:accent3><a:accent4><a:srgbClr
-          val="15436B"/></a:accent4><a:accent5><a:srgbClr val="D44849"/></a:accent5><a:accent6><a:srgbClr
-          val="7F7F7F"/></a:accent6><a:hlink><a:srgbClr val="0078FF"/></a:hlink><a:folHlink><a:srgbClr
-          val="55CBFF"/></a:folHlink></a:clrScheme>
-    CreateDataSourceFieldSchemaRequest:
+    DataSource:
       required:
+      - fields
+      - id
       - name
-      - type
       type: object
       properties:
-        type:
-          minLength: 1
-          type: string
-          description: Data source field schema type.
-        name:
-          minLength: 1
-          pattern: "^[A-Z][a-zA-Z0-9_-]*$"
-          type: string
-          description: The name of the field. It must be unique within the data source.
-        isRequired:
-          type: boolean
-          description: Whether the field is required. If true, the field must be filled
-            in when creating a data source item.
-      additionalProperties: false
-      discriminator:
-        propertyName: type
-        mapping:
-          Text: "#/components/schemas/CreateTextFieldSchemaRequest"
-          Number: "#/components/schemas/CreateNumberFieldSchemaRequest"
-          Image: "#/components/schemas/CreateImageFieldSchemaRequest"
-          Reference: "#/components/schemas/CreateReferenceFieldSchemaRequest"
-      example:
-        name: History
-        type: text
-        isMultipleLines: true
-        defaultValue: The city was established in the year 1652 by Dutch explorers...
-        isRequired: false
-    CreateDataSourceItemFieldRequest:
-      required:
-      - dataSourceFieldId
-      - type
-      type: object
-      properties:
-        type:
-          minLength: 1
-          type: string
-          description: Data source item field type.
-          readOnly: true
-        dataSourceFieldId:
+        id:
           type: integer
-          description: Data source field identifier.
-          format: int32
-          readOnly: true
-      additionalProperties: false
-      discriminator:
-        propertyName: type
-        mapping:
-          Text: "#/components/schemas/CreateTextDataSourceItemFieldRequest"
-          Number: "#/components/schemas/CreateNumberDataSourceItemFieldRequest"
-          Reference: "#/components/schemas/CreateReferenceDataSourceItemFieldRequest"
-          Image: "#/components/schemas/CreateImageDataSourceItemFieldRequest"
-          Font: "#/components/schemas/CreateFontDataSourceItemFieldRequest"
-          ColorTheme: "#/components/schemas/CreateColorThemeDataSourceItemFieldRequest"
-    CreateDataSourceItemRequest:
-      type: object
-      properties:
-        fields:
-          type: array
-          items:
-            oneOf:
-            - "$ref": "#/components/schemas/CreateTextDataSourceItemFieldRequest"
-            - "$ref": "#/components/schemas/CreateNumberDataSourceItemFieldRequest"
-            - "$ref": "#/components/schemas/CreateReferenceDataSourceItemFieldRequest"
-            - "$ref": "#/components/schemas/CreateImageDataSourceItemFieldRequest"
-            - "$ref": "#/components/schemas/CreateFontDataSourceItemFieldRequest"
-            - "$ref": "#/components/schemas/CreateColorThemeDataSourceItemFieldRequest"
-          description: The fields of the data source item.
-          nullable: true
-      additionalProperties: false
-      example:
-        fields:
-        - dataSourceFieldId: 0
-          type: text
-          value: Sample text
-        - dataSourceFieldId: 1
-          type: number
-          value: 123.45
-        - dataSourceFieldId: 2
-          type: reference
-          dataSourceItemId: '638247997437572264'
-        - dataSourceFieldId: 3
-          type: image
-          fileName: Cat
-          fileUrl: https://en.wikipedia.org/wiki/Cat#/media/File:Cat_August_2010-4.jpg
-        - dataSourceFieldId: 4
-          type: font
-          fileName: best-font
-          fileUrl: https://allfonts.com/best-font
-        - dataSourceFieldId: 5
-          type: colorTheme
-          xmlValue: <a:clrScheme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-            name="Templafy_New"><a:dk1><a:srgbClr val="0078FF"/></a:dk1><a:lt1><a:sysClr
-            val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="000000"/></a:dk2><a:lt2><a:srgbClr
-            val="E5E5E5"/></a:lt2><a:accent1><a:srgbClr val="0078FF"/></a:accent1><a:accent2><a:srgbClr
-            val="575757"/></a:accent2><a:accent3><a:srgbClr val="12AA96"/></a:accent3><a:accent4><a:srgbClr
-            val="15436B"/></a:accent4><a:accent5><a:srgbClr val="D44849"/></a:accent5><a:accent6><a:srgbClr
-            val="7F7F7F"/></a:accent6><a:hlink><a:srgbClr val="0078FF"/></a:hlink><a:folHlink><a:srgbClr
-            val="55CBFF"/></a:folHlink></a:clrScheme>
-    CreateDataSourceRequest:
-      required:
-      - name
-      type: object
-      properties:
+          description: Unique data source identifier.
+          format: int64
         name:
-          maxLength: 100
           minLength: 1
-          pattern: "^[A-Z][a-zA-Z0-9_-]*$"
           type: string
-          description: The name of the data source. It must be unique. Max length
-            is 100 characters.
+          description: Data source name. It must be unique.
         description:
           type: string
-          description: The description of the data source.
+          description: Data source description.
           nullable: true
         fields:
           type: array
           items:
             oneOf:
-            - "$ref": "#/components/schemas/CreateTextFieldSchemaRequest"
-            - "$ref": "#/components/schemas/CreateNumberFieldSchemaRequest"
-            - "$ref": "#/components/schemas/CreateImageFieldSchemaRequest"
-            - "$ref": "#/components/schemas/CreateReferenceFieldSchemaRequest"
-            example:
-              name: History
-              type: text
-              isMultipleLines: true
-              defaultValue: The city was established in the year 1652 by Dutch explorers...
-              isRequired: false
-          description: The fields of the data source. If not specified, the data source
-            will be created without fields.
-          nullable: true
+            - "$ref": "#/components/schemas/TextFieldSchema"
+            - "$ref": "#/components/schemas/NumberFieldSchema"
+            - "$ref": "#/components/schemas/ReferenceFieldSchema"
+            - "$ref": "#/components/schemas/ImageFieldSchema"
+            - "$ref": "#/components/schemas/LanguageFieldSchema"
+            - "$ref": "#/components/schemas/FontFieldSchema"
+            - "$ref": "#/components/schemas/ColorThemeFieldSchema"
       additionalProperties: false
       example:
+        id: '638247997499047080'
         name: Cities
         description: Cities in which we have offices
         fields:
-        - name: History
+        - id: 0
+          name: Name
           type: text
+          isRequired: true
+          isLocked: true
+          isMultipleLines: false
+        - id: 1
+          name: History
+          type: text
+          isRequired: false
+          isLocked: false
           isMultipleLines: true
           defaultValue: The city was established in the year 1652 by Dutch explorers...
-          isRequired: false
-        - name: Population
+        - id: 2
+          name: Population
           type: number
+          isRequired: true
+          isLocked: false
           defaultValue: 100222
-          isRequired: true
-        - name: Country
+        - id: 3
+          name: Country
           type: reference
-          referenceDataSourceId: '637989101951089955'
-          defaultReferencedItemId: '638249311425155568'
           isRequired: true
-        - name: Flag
+          isLocked: false
+          defaultValue: '638247997437572266'
+          referenceDataSourceId: '638247997437572264'
+        - id: 4
+          name: Flag
           type: image
-          isRequired: true
-    CreateFontDataSourceItemFieldRequest:
+          isRequired: false
+          isLocked: false
+        - id: 5
+          name: PreferredLanguage
+          type: language
+          isRequired: false
+          isLocked: false
+          defaultValue: German
+        - id: 6
+          name: PreferredFont
+          type: font
+          isRequired: false
+          isLocked: false
+        - id: 7
+          name: PreferredColourTheme
+          type: colorTheme
+          isRequired: false
+          isLocked: false
+
+
+    FontFieldSchema:
       allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - required:
-        - fileName
-        type: object
-        properties:
-          fileName:
-            minLength: 1
-            type: string
-            description: The name of the file.
-          fileUrl:
-            type: string
-            description: 'The file size must be under 2MB, and it should be in one
-              of these formats: .ttf, .otf.'
-            format: uri
-            nullable: true
-          content:
-            type: string
-            description: 'The base64 content size must be under 2MB, and it should
-              be in one of these formats: .ttf, .otf.'
-            nullable: true
-        additionalProperties: false
-      example:
-        type: font
-        dataSourceFieldId: 4
-        fileName: best-font
-        fileUrl: https://allfonts.com/best-font
-    CreateImageDataSourceItemFieldRequest:
-      allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - required:
-        - fileName
-        type: object
-        properties:
-          fileName:
-            minLength: 1
-            type: string
-            description: The name of the file.
-          fileUrl:
-            type: string
-            description: 'The file size must be under 2MB, and it should be in one
-              of these formats: .png, .jpg, .jpeg, .gif, .bmp, .emf, .wmf, .svg.'
-            format: uri
-            nullable: true
-          content:
-            type: string
-            description: 'The base64 content size must be under 2MB, and it should
-              be in one of these formats: .png, .jpg, .jpeg, .gif, .bmp, .emf, .wmf,
-              .svg.'
-            nullable: true
-        additionalProperties: false
-      example:
-        type: image
-        dataSourceFieldId: 3
-        fileName: Cat
-        fileUrl: https://en.wikipedia.org/wiki/Cat#/media/File:Cat_August_2010-4.jpg
-    CreateImageFieldSchemaRequest:
-      allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceFieldSchemaRequest"
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
       - type: object
         additionalProperties: false
       example:
-        name: Flag
-        type: image
-        isRequired: true
-    CreateNumberDataSourceItemFieldRequest:
+        id: 5
+        name: PreferredFont
+        type: font
+        isRequired: false
+        isLocked: false
+    ImageFieldSchema:
       allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - required:
-        - value
-        type: object
-        properties:
-          value:
-            type: number
-            description: The value of the field with the precision of 2 decimal places.
-            format: double
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
+      - type: object
         additionalProperties: false
       example:
-        type: number
-        dataSourceFieldId: 1
-        value: 123.45
-    CreateNumberFieldSchemaRequest:
+        id: 2
+        name: Logo
+        type: image
+        isRequired: false
+        isLocked: false
+    LanguageFieldSchema:
       allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceFieldSchemaRequest"
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
+      - type: object
+        properties:
+          defaultValue:
+            type: string
+            description: The default value of the field. If specified, the field will
+              be pre-filled with this value when creating a data source item.
+            nullable: true
+        additionalProperties: false
+      example:
+        id: 4
+        name: PreferredLanguage
+        type: language
+        isRequired: false
+        isLocked: false
+        defaultValue: German
+    NumberFieldSchema:
+      allOf:
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
       - type: object
         properties:
           defaultValue:
@@ -2584,29 +2444,15 @@ components:
             nullable: true
         additionalProperties: false
       example:
-        name: Population
+        id: 1
+        name: NumberOfOffices
         type: number
-        defaultValue: 100222
         isRequired: true
-    CreateReferenceDataSourceItemFieldRequest:
+        isLocked: false
+        defaultValue: 1
+    ReferenceFieldSchema:
       allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - required:
-        - dataSourceItemId
-        type: object
-        properties:
-          dataSourceItemId:
-            type: integer
-            description: The identifier of the data source item to be referenced.
-            format: int64
-        additionalProperties: false
-      example:
-        dataSourceFieldId: 2
-        type: reference
-        dataSourceItemId: '638247997437572264'
-    CreateReferenceFieldSchemaRequest:
-      allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceFieldSchemaRequest"
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
       - required:
         - referenceDataSourceId
         type: object
@@ -2615,7 +2461,7 @@ components:
             type: integer
             description: The id of the data source that the field references.
             format: int64
-          defaultReferencedItemId:
+          defaultValue:
             type: integer
             description: The default value of the field. If specified, the field will
               be pre-filled with this value when creating a data source item.
@@ -2623,30 +2469,19 @@ components:
             nullable: true
         additionalProperties: false
       example:
-        name: Country
+        id: 3
+        name: Region
         type: reference
-        referenceDataSourceId: '637989101951089955'
-        defaultReferencedItemId: '638249311425155568'
         isRequired: true
-    CreateTextDataSourceItemFieldRequest:
+        isLocked: false
+        defaultValue: '638247997437572266'
+        referenceDataSourceId: '638247997437572264'
+    TextFieldSchema:
       allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceItemFieldRequest"
-      - type: object
-        properties:
-          value:
-            maxLength: 8000
-            type: string
-            description: Text data source item field value. Max length is 8000 characters.
-            nullable: true
-        additionalProperties: false
-      example:
-        type: text
-        dataSourceFieldId: 0
-        value: Sample text
-    CreateTextFieldSchemaRequest:
-      allOf:
-      - "$ref": "#/components/schemas/CreateDataSourceFieldSchemaRequest"
-      - type: object
+      - "$ref": "#/components/schemas/DataSourceFieldSchema"
+      - required:
+        - isMultipleLines
+        type: object
         properties:
           isMultipleLines:
             type: boolean
@@ -2659,11 +2494,14 @@ components:
             nullable: true
         additionalProperties: false
       example:
+        id: 1
         name: History
         type: text
-        isMultipleLines: true
+        isRequired: true
+        isLocked: false
+        isMultipleLines: false
         defaultValue: The city was established in the year 1652 by Dutch explorers...
-        isRequired: false
+
   securitySchemes:
     bearerAuth:
       type: http
