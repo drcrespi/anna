@@ -1,0 +1,902 @@
+---
+openapi: 3.0.3
+info:
+  contact:
+    name: Support
+    url: https://support.templafy.com/
+    email: support@templafy.com
+  version: v3
+  termsOfService: https://www.templafy.com/templafy-saas-agreement/
+  title: Templafy Public API
+  description: Please refer to our [documentation](https://support.templafy.com/hc/en-us/articles/4411351240081-Public-API-Hive-)
+    for guidelines and examples.
+servers:
+- variables:
+    tenantId:
+      description: Your Templafy subdomain, i.e., https://{TenantId}.api.templafy.com
+      default: ''
+  url: https://{tenantId}.api.templafy.com/v3
+paths:
+  "/spaces":
+    get:
+      tags:
+      - Spaces
+      summary: Lists all existing active spaces.
+      description: Returns a list of all active spaces.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Space"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - bearerAuth:
+        - spaces.read
+  "/libraries":
+    get:
+      tags:
+      - Libraries
+      summary: Lists all libraries from all spaces.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Library"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+      - bearerAuth:
+        - library.read
+        - library.readwrite
+components:
+  schemas:
+    Space:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique Space identifier
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Space name
+      additionalProperties: false
+      example:
+        id: 541244332157142140
+        name: Global Brand
+    AssetFileStateWithPreviews:
+      enum:
+      - ready
+      - processing
+      - processingFailed
+      - generatingPreviews
+      - generatingPreviewsFailed
+      - deleting
+      type: string
+      description: The current state of the asset
+    AssetFileStateWithoutPreviews:
+      enum:
+      - ready
+      - processing
+      - processingFailed
+      - deleting
+      type: string
+      description: The current state of the asset
+    AssetStateWithoutFile:
+      enum:
+      - ready
+      type: string
+      description: The current state of the asset
+    ConflictProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+        traceId:
+          type: string
+          nullable: true
+      additionalProperties: false
+      example:
+        title: Conflict
+        detail: The request could not be completed due to a conflict with the current
+          state of the resource.
+        status: 409
+        traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
+    CreateFolderRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Display name
+      additionalProperties: false
+      description: The request model to create a folder
+    CreateLinkRequest:
+      required:
+      - name
+      - url
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+          description: Describing intended usage of the asset
+          nullable: true
+        tags:
+          type: array
+          items:
+            maxLength: 1024
+            minLength: 2
+            type: string
+          description: Tags should describe the content of the asset making it easier
+            for a user to locate it
+          nullable: true
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        url:
+          maxLength: 2048
+          type: string
+          description: A reference to the web resource. HTTP and HTTPS are supported
+      additionalProperties: false
+      description: The request model to create a link asset
+    Dimensions:
+      required:
+      - height
+      - width
+      type: object
+      properties:
+        height:
+          type: integer
+          description: Height of the asset in pixels
+          format: int32
+        width:
+          type: integer
+          description: Width of the asset in pixels
+          format: int32
+        aspectRatio:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: Asset dimensions
+    Document:
+      required:
+      - assetState
+      - checksum
+      - description
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a document.
+            E.g. "folder-a/folder-b/_my-document" when the location is "Folder A >
+            Folder B > My Document"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    DocumentDetails:
+      required:
+      - assetState
+      - checksum
+      - description
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a document.
+            E.g. "folder-a/folder-b/_my-document" when the location is "Folder A >
+            Folder B > My Document"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    EmailElement:
+      required:
+      - assetState
+      - checksum
+      - description
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a email
+            element. E.g. "folder-a/folder-b/_my-email-element" when the location
+            is "Folder A > Folder B > My Email Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    EmailElementDetails:
+      required:
+      - assetState
+      - checksum
+      - description
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a email
+            element. E.g. "folder-a/folder-b/_my-email-element" when the location
+            is "Folder A > Folder B > My Email Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    Folder:
+      required:
+      - id
+      - libraryId
+      - modifiedAt
+      - name
+      - navigationPath
+      - state
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        libraryId:
+          type: integer
+          description: Unique library identifier
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Display name
+        parentId:
+          type: integer
+          description: Unique identifier for the parent folder. The root folder does
+            not have a parent folder identifier
+          format: int64
+          nullable: true
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a folder.
+            E.g. "folder-a/folder-b" when the location is "Folder A > Folder B"
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the folder was last
+            modified
+        state:
+          "$ref": "#/components/schemas/FolderState"
+      additionalProperties: false
+    FolderDetails:
+      required:
+      - id
+      - libraryId
+      - modifiedAt
+      - name
+      - navigationPath
+      - state
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        libraryId:
+          type: integer
+          description: Unique library identifier
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Display name
+        parentId:
+          type: integer
+          description: Unique identifier for the parent folder. The root folder does
+            not have a parent folder identifier
+          format: int64
+          nullable: true
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a folder.
+            E.g. "folder-a/folder-b" when the location is "Folder A > Folder B"
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the folder was last
+            modified
+        state:
+          "$ref": "#/components/schemas/FolderState"
+      additionalProperties: false
+    FolderState:
+      enum:
+      - ready
+      - deleting
+      type: string
+      description: The current state of the folder
+    GenerateFileRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          description: Email to be used for identification.
+          format: email
+        data:
+          description: Data to be used during the file generation.
+          nullable: true
+        includePdf:
+          type: boolean
+          description: Specifies whether a PDF export of the file should be included
+            in the response.
+      additionalProperties: false
+      description: The request model to generate a file.
+      example:
+        email: templafy@templafy.com
+        data:
+          Language: en-us
+        includePdf: true
+    GenerateTextElementFileRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          description: Email to be used for identification.
+          format: email
+        data:
+          description: Data to be used during the file generation.
+          nullable: true
+      additionalProperties: false
+      description: The request model to generate a text element file.
+      example:
+        email: templafy@templafy.com
+        data:
+          Language: en-us
+    GeneratedFile:
+      required:
+      - checksum
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - mimeType
+      type: object
+      properties:
+        downloadUrl:
+          minLength: 1
+          type: string
+          description: Temporary access URL for generated file.
+          format: uri
+        fileSize:
+          type: integer
+          description: File size in bytes.
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes.
+        mimeType:
+          minLength: 1
+          type: string
+          description: Mime type of the generated file.
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file.
+        pdfDownloadUrl:
+          type: string
+          description: Temporary access URL for generated PDF file. Only available
+            if the file was converted to PDF.
+          nullable: true
+      additionalProperties: false
+      description: The generated file response model.
+    GeneratedTextElementFile:
+      required:
+      - checksum
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - mimeType
+      type: object
+      properties:
+        downloadUrl:
+          minLength: 1
+          type: string
+          description: Temporary access URL for generated file.
+          format: uri
+        fileSize:
+          type: integer
+          description: File size in bytes.
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes.
+        mimeType:
+          minLength: 1
+          type: string
+          description: Mime type of the generated file.
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file.
+      additionalProperties: false
+      description: The generated text element file response model.
+    Image:
+      required:
+      - assetState
+      - automaticTags
+      - checksum
+      - description
+      - dimensions
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - mimeType
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        smallPreviewLink:
+          type: string
+          description: Link to the image with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the image with the maximum width 1500px
+          nullable: true
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        mimeType:
+          minLength: 1
+          type: string
+        automaticTags:
+          type: array
+          items:
+            type: string
+          description: Tags that are automatically generated based on the image
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of an
+            image. E.g. "folder-a/folder-b/_my-image" when the location is "Folder
+            A > Folder B > My Image"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+      additionalProperties: false
+    ImageDetails:
+      required:
+      - assetState
+      - automaticTags
+      - checksum
+      - description
+      - dimensions
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - mimeType
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        smallPreviewLink:
+          type: string
+          description: Link to the image with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the image with the maximum width 1500px
+          nullable: true
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        mimeType:
+          minLength: 1
+          type: string
+        automaticTags:
+          type: array
+          items:
+            type: string
+          description: Tags that are automatically generated based on the image
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of an
+            image. E.g. "folder-a/folder-b/_my-image" when the location is "Folder
+            A > Folder B > My Image"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+      additionalProperties: false
+    Library:
+      required:
+      - id
+      - libraryType
+      - name
+      - rootFolderId
+      - spaceId
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique library identifier
+          format: int64
+        name:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: Display name of the library
+        libraryType:
+          "$ref": "#/components/schemas/LibraryType"
+        spaceId:
+          type: integer
+          description: Unique identifier of the space to which the library belongs
+          format: int64
+        rootFolderId:
+          type: integer
+          description: Unique identifier of the root folder of the library
+          format: int64
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
