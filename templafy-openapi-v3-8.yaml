@@ -2546,6 +2546,52 @@ components:
           isLocked: false
 
 
+    DataSourceFieldSchema:
+      required:
+      - id
+      - isLocked
+      - isRequired
+      - name
+      - type
+      type: object
+      properties:
+        type:
+          minLength: 1
+          type: string
+          description: Data source field schema type.
+          readOnly: true
+        id:
+          type: integer
+          description: Unique data source field schema identifier
+          format: int32
+          readOnly: true
+        name:
+          minLength: 1
+          type: string
+          description: Data source field schema name. It must be unique within the
+            data source.
+          readOnly: true
+        isLocked:
+          type: boolean
+          description: Value indicating whether data source schema is locked. If true,
+            the field cannot be deleted or modified.
+          readOnly: true
+        isRequired:
+          type: boolean
+          description: Whether the field is required. If true, the field must be filled
+            in when creating a data source item.
+          readOnly: true
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+        mapping:
+          Text: "#/components/schemas/TextFieldSchema"
+          Number: "#/components/schemas/NumberFieldSchema"
+          Reference: "#/components/schemas/ReferenceFieldSchema"
+          Image: "#/components/schemas/ImageFieldSchema"
+          Language: "#/components/schemas/LanguageFieldSchema"
+          Font: "#/components/schemas/FontFieldSchema"
+          ColorTheme: "#/components/schemas/ColorThemeFieldSchema"
     FontFieldSchema:
       allOf:
       - "$ref": "#/components/schemas/DataSourceFieldSchema"
