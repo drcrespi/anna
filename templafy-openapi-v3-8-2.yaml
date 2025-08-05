@@ -2294,7 +2294,6 @@ components:
         title: One or more validation errors occurred.
         status: 400
         traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
-
     ColorThemeFieldSchema:
       allOf:
       - "$ref": "#/components/schemas/DataSourceFieldSchema"
