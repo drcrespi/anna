@@ -1923,6 +1923,377 @@ components:
           description: Link to the asset with the maximum width 1500px
           nullable: true
       additionalProperties: false
+    Spreadsheet:
+      required:
+      - assetState
+      - checksum
+      - description
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a spreadsheet.
+            E.g. "folder-a/folder-b/_my-spreadsheet" when the location is "Folder
+            A > Folder B > My Spreadsheet"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    SpreadsheetDetails:
+      required:
+      - assetState
+      - checksum
+      - description
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a spreadsheet.
+            E.g. "folder-a/folder-b/_my-spreadsheet" when the location is "Folder
+            A > Folder B > My Spreadsheet"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    TextElement:
+      required:
+      - assetState
+      - checksum
+      - description
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a text
+            element. E.g. "folder-a/folder-b/_my-text-element" when the location is
+            "Folder A > Folder B > My Text Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    TextElementDetails:
+      required:
+      - assetState
+      - checksum
+      - description
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a text
+            element. E.g. "folder-a/folder-b/_my-text-element" when the location is
+            "Folder A > Folder B > My Text Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    UpdateFolderRequest:
+      type: object
+      properties:
+        name:
+          maxLength: 50
+          type: string
+          description: Display name
+          nullable: true
+        parentFolderId:
+          type: integer
+          description: The identifier of a folder that current folder should be moved
+            to
+          format: int64
+          nullable: true
+      additionalProperties: false
+      description: The request model to update the folder
+    UpdateLinkRequest:
+      type: object
+      properties:
+        folderId:
+          type: integer
+          description: The identifier of the destination folder
+          format: int64
+          nullable: true
+        name:
+          maxLength: 100
+          type: string
+          description: A new display name of the asset
+          nullable: true
+        description:
+          maxLength: 250
+          type: string
+          description: Description is used to specify the intended usage of the asset
+          nullable: true
+        tags:
+          type: array
+          items:
+            maxLength: 1024
+            minLength: 2
+            type: string
+          description: Tags should describe the content of the asset making it easier
+            for a user to locate it
+          nullable: true
+        url:
+          maxLength: 2048
+          type: string
+          description: A reference to the web resource. HTTP and HTTPS are supported
+          nullable: true
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+      additionalProperties: false
+    ValidationProblemDetails:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+        traceId:
+          type: string
+          nullable: true
+      additionalProperties: false
+      example:
+        errors:
+        - name: The name field is required
+        - data: The input was invalid
+        title: One or more validation errors occurred.
+        status: 400
+        traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
   securitySchemes:
     bearerAuth:
       type: http
