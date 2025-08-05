@@ -2322,14 +2322,7 @@ components:
       example:
         type: colorTheme
         dataSourceFieldId: 5
-        xmlValue: <a:clrScheme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
-          name="Templafy_New"><a:dk1><a:srgbClr val="0078FF"/></a:dk1><a:lt1><a:sysClr
-          val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="000000"/></a:dk2><a:lt2><a:srgbClr
-          val="E5E5E5"/></a:lt2><a:accent1><a:srgbClr val="0078FF"/></a:accent1><a:accent2><a:srgbClr
-          val="575757"/></a:accent2><a:accent3><a:srgbClr val="12AA96"/></a:accent3><a:accent4><a:srgbClr
-          val="15436B"/></a:accent4><a:accent5><a:srgbClr val="D44849"/></a:accent5><a:accent6><a:srgbClr
-          val="7F7F7F"/></a:accent6><a:hlink><a:srgbClr val="0078FF"/></a:hlink><a:folHlink><a:srgbClr
-          val="55CBFF"/></a:folHlink></a:clrScheme>
+        xmlValue: TEST
     CreateDataSourceItemFieldRequest:
       required:
       - dataSourceFieldId
