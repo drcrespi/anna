@@ -895,6 +895,191 @@ components:
           description: Unique identifier of the root folder of the library
           format: int64
       additionalProperties: false
+    LibraryDetails:
+      required:
+      - id
+      - libraryType
+      - name
+      - rootFolderId
+      - spaceId
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique library identifier
+          format: int64
+        name:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: Display name of the library
+        libraryType:
+          "$ref": "#/components/schemas/LibraryType"
+        spaceId:
+          type: integer
+          description: Unique identifier of the space to which the library belongs
+          format: int64
+        rootFolderId:
+          type: integer
+          description: Unique identifier of the root folder of the library
+          format: int64
+      additionalProperties: false
+    LibraryType:
+      enum:
+      - documents
+      - presentations
+      - spreadsheets
+      - slides
+      - slide-elements
+      - text-elements
+      - images
+      - pdfs
+      - links
+      - email-elements
+      type: string
+      description: Type of the assets that can be stored in the library
+    Link:
+      required:
+      - assetState
+      - description
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      - url
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        url:
+          maxLength: 2048
+          minLength: 1
+          type: string
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a link.
+            E.g. "folder-a/folder-b/_my-link" when the location is "Folder A > Folder
+            B > My Link"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetStateWithoutFile"
+      additionalProperties: false
+    LinkDetails:
+      required:
+      - assetState
+      - description
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      - url
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        url:
+          maxLength: 2048
+          minLength: 1
+          type: string
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a link.
+            E.g. "folder-a/folder-b/_my-link" when the location is "Folder A > Folder
+            B > My Link"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetStateWithoutFile"
+      additionalProperties: false
+    NotFoundProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+        traceId:
+          type: string
+          nullable: true
+      additionalProperties: false
+      example:
+        title: NotFound
+        detail: The server can not find the requested resource.
+        status: 404
+        traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
   securitySchemes:
     bearerAuth:
       type: http
