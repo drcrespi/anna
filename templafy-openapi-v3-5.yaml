@@ -1080,6 +1080,849 @@ components:
         detail: The server can not find the requested resource.
         status: 404
         traceId: d61f7ce-cccb-4e5b-8727-3b68a61a0559
+    Pdf:
+      required:
+      - assetState
+      - checksum
+      - description
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a pdf.
+            E.g. "folder-a/folder-b/_my-pdf" when the location is "Folder A > Folder
+            B > My Pdf"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    PdfDetails:
+      required:
+      - assetState
+      - checksum
+      - description
+      - downloadUrl
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        description:
+          maxLength: 250
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a pdf.
+            E.g. "folder-a/folder-b/_my-pdf" when the location is "Folder A > Folder
+            B > My Pdf"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithoutPreviews"
+      additionalProperties: false
+    Presentation:
+      required:
+      - assetType
+      - description
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/PresentationBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Presentation for this schema
+        description:
+          maxLength: 250
+          type: string
+      additionalProperties: false
+    PresentationBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - dimensions
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a presentation.
+            E.g. "folder-a/folder-b/_my-presentation" when the location is "Folder
+            A > Folder B > My Presentation"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
+    PresentationDetails:
+      required:
+      - assetType
+      - childrenAssetIds
+      - description
+      - downloadUrl
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/PresentationDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Presentation for this schema
+        childrenAssetIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The array of the identifiers of slides included in the presentation
+        description:
+          maxLength: 250
+          type: string
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+      additionalProperties: false
+    PresentationDetailsBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - dimensions
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a presentation.
+            E.g. "folder-a/folder-b/_my-presentation" when the location is "Folder
+            A > Folder B > My Presentation"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
+    PresentationSlide:
+      required:
+      - assetType
+      - presentationId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/PresentationBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Slide for this schema
+        presentationId:
+          type: integer
+          description: The identifier of the presentation to which a slide belongs
+          format: int64
+      additionalProperties: false
+    PresentationSlideDetails:
+      required:
+      - assetType
+      - presentationId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/PresentationDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Slide for this schema
+        presentationId:
+          type: integer
+          description: The identifier of the presentation to which a slide belongs
+          format: int64
+      additionalProperties: false
+    Slide:
+      required:
+      - assetType
+      - slideDeckId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Slide for this schema
+        slideDeckId:
+          type: integer
+          description: The identifier of the slide deck to which a slide belongs
+          format: int64
+      additionalProperties: false
+    SlideBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - dimensions
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a slide.
+            E.g. "folder-a/folder-b/_my-slide" when the location is "Folder A > Folder
+            B > My Slide"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
+    SlideDeck:
+      required:
+      - assetType
+      - description
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideDeck for this schema
+        description:
+          maxLength: 250
+          type: string
+      additionalProperties: false
+    SlideDeckDetails:
+      required:
+      - assetType
+      - childrenAssetIds
+      - description
+      - downloadUrl
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideDeck for this schema
+        childrenAssetIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The array of the identifiers of slides included in the slide
+            deck
+        description:
+          maxLength: 250
+          type: string
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+      additionalProperties: false
+    SlideDetails:
+      required:
+      - assetType
+      - slideDeckId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always Slide for this schema
+        slideDeckId:
+          type: integer
+          description: The identifier of the slide deck to which a slide belongs
+          format: int64
+      additionalProperties: false
+    SlideDetailsBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - dimensions
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        dimensions:
+          "$ref": "#/components/schemas/Dimensions"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a slide.
+            E.g. "folder-a/folder-b/_my-slide" when the location is "Folder A > Folder
+            B > My Slide"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
+    SlideElement:
+      required:
+      - assetType
+      - slideElementDeckId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideElementBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideElement for this schema
+        slideElementDeckId:
+          type: integer
+          description: The identifier of the slide element deck to which a slide element
+            belongs
+          format: int64
+      additionalProperties: false
+    SlideElementBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a slide
+            element. E.g. "folder-a/folder-b/_my-slide-element" when the location
+            is "Folder A > Folder B > My Slide Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
+    SlideElementDeck:
+      required:
+      - assetType
+      - description
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideElementBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideElementDeck for this schema
+        description:
+          maxLength: 250
+          type: string
+      additionalProperties: false
+    SlideElementDeckDetails:
+      required:
+      - assetType
+      - childrenAssetIds
+      - description
+      - downloadUrl
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideElementDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideElementDeck for this schema
+        childrenAssetIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: The array of the identifiers of slide elements included in
+            the slide element deck
+        description:
+          maxLength: 250
+          type: string
+        downloadUrl:
+          type: string
+          description: Generated temporary access URL for content downloading with
+            302 response code
+          format: uri
+      additionalProperties: false
+    SlideElementDetails:
+      required:
+      - assetType
+      - slideElementDeckId
+      type: object
+      allOf:
+      - "$ref": "#/components/schemas/SlideElementDetailsBase"
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+          description: Type of the asset. It is always SlideElement for this schema
+        slideElementDeckId:
+          type: integer
+          description: The identifier of the slide element deck to which a slide element
+            belongs
+          format: int64
+      additionalProperties: false
+    SlideElementDetailsBase:
+      required:
+      - assetState
+      - assetType
+      - checksum
+      - fileExtension
+      - fileSize
+      - folderId
+      - id
+      - modifiedAt
+      - name
+      - navigationPath
+      - tags
+      type: object
+      properties:
+        assetType:
+          minLength: 1
+          type: string
+        assetState:
+          "$ref": "#/components/schemas/AssetFileStateWithPreviews"
+        id:
+          type: integer
+          description: Unique asset identifier
+          format: int64
+        folderId:
+          type: integer
+          description: Unique folder identifier
+          format: int64
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Display name
+        tags:
+          type: array
+          items:
+            type: string
+        fileSize:
+          type: integer
+          description: File size in bytes
+          format: int64
+        checksum:
+          minLength: 1
+          type: string
+          description: MD5 checksum of the bytes
+        fileExtension:
+          minLength: 1
+          type: string
+          description: Suffix to the name of the file
+        navigationPath:
+          maxLength: 700
+          minLength: 1
+          type: string
+          description: Hierarchical path in lowercase based on the location of a slide
+            element. E.g. "folder-a/folder-b/_my-slide-element" when the location
+            is "Folder A > Folder B > My Slide Element"
+        externalData:
+          maxLength: 100
+          type: string
+          description: External data which can be attached for future reference
+          nullable: true
+        modifiedAt:
+          minLength: 1
+          type: string
+          description: Date and time in ISO 8601 format of when the asset was last
+            modified
+        smallPreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 400px
+          nullable: true
+        largePreviewLink:
+          type: string
+          description: Link to the asset with the maximum width 1500px
+          nullable: true
+      additionalProperties: false
   securitySchemes:
     bearerAuth:
       type: http
